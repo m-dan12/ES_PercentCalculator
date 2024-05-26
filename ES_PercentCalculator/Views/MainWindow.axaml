@@ -1,0 +1,282 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ES_PercentCalculator.ViewModels"
+        xmlns:local="using:ES_PercentCalculator.Controls"
+		xmlns:controls="using:ES_PercentCalculator"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+        x:Class="ES_PercentCalculator.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="ES_PercentCalculator">
+
+    <Design.DataContext>
+		<vm:MainWindowViewModel/>
+    </Design.DataContext>
+	<Window.Styles>
+		<Style Selector="Window">
+			<Setter Property="FontFamily" Value="Roboto"/>
+		</Style>
+		<Style Selector="StackPanel">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+		<Style Selector="TextBlock">
+			<Setter Property="FontSize" Value="16"/>
+			<Style Selector="^.Title">
+				<Setter Property="FontSize" Value="48"/>
+			</Style>
+			<Style Selector="^.Subtitle">
+				<Setter Property="FontSize" Value="18"/>
+			</Style>
+			<Style Selector="^.H1">
+				<Setter Property="FontSize" Value="32"/>
+			</Style>
+			<Style Selector="^.H2">
+				<Setter Property="FontSize" Value="24"/>
+			</Style>
+			<Style Selector="^.H3">
+				<Setter Property="FontSize" Value="20"/>
+			</Style>
+			<Style Selector="^.H4">
+				<Setter Property="FontSize" Value="16"/>
+			</Style>
+			<Setter Property="Foreground" Value="{StaticResource Text}"/>
+			<Style Selector="^.Sub">
+				<Setter Property="Foreground" Value="{StaticResource Color3}"/>
+				<Style Selector="^.Right">
+					<Setter Property="HorizontalAlignment" Value="Right"/>
+				</Style>
+			</Style>
+			<Style Selector="^.Bold">
+				<Setter Property="FontWeight" Value="Bold"/>
+			</Style>
+			<Style Selector="^.Accent">
+				<Setter Property="Foreground" Value="{StaticResource TextAccent}"/>
+			</Style>
+		</Style>
+		<Style Selector="NumericUpDown">
+			<Setter Property="Background" Value="{StaticResource Color1}"/>
+			<Setter Property="ShowButtonSpinner" Value="false"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Padding" Value="25 15"/>
+			<Setter Property="Foreground" Value="{StaticResource Text}"/>
+			<Style Selector="^ TextBlock">
+				<Setter Property="Foreground" Value="{StaticResource Text}"/>
+			</Style>
+		</Style>
+		<Style Selector="Border">
+			<Style Selector="^.Line">
+				<Setter Property="Background" Value="{StaticResource TextAccent}"/>
+				<Style Selector="^.V">
+					<Setter Property="Width" Value="2"/>
+					<Setter Property="VerticalAlignment" Value="Stretch"/>
+				</Style>
+				<Style Selector="^.H">
+					<Setter Property="Height" Value="2"/>
+					<Setter Property="HorizontalAlignment" Value="Stretch"/>
+				</Style>
+			</Style>
+		</Style>
+	</Window.Styles>
+
+	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,25,0,0" Spacing="25">
+		
+		<!-- Заголовки -->
+		<StackPanel Grid.Row="0" Margin="25" Spacing="15">
+			<TextBlock Classes="Title Bold"
+					   Text="Рассчет ипотеки"/>
+			<TextBlock Classes="Subtitle Sub"
+					   Text="Кредитный калькулятор поможет подобрать выгодные условия."/>
+		</StackPanel>
+		
+		<!-- Контент -->
+		<StackPanel Orientation="Horizontal">
+
+			<!-- Входные данные -->
+			<Border Padding="20 0" VerticalAlignment="Top" Width="500">
+				<StackPanel Spacing="30">
+					<TextBlock Classes="H1 Bold"
+							   Text="Рассчетные данные"/>
+					<StackPanel>
+						<!-- controls:NumericBox Minimum="354000" Increment="100000" Value="{Binding InputData.PropertyValue}"/-->
+						<TextBlock Classes="Sub" Text="Стоимость недвижимости" Margin="25,0,0,5"/>
+						<NumericUpDown Minimum="354000"
+									   Maximum="100000000"
+									   Increment="100000"
+									   Value="{Binding InputData.PropertyValue}"/>
+						<Slider Minimum="354000"
+								Maximum="100000000"
+								Value="{Binding InputData.PropertyValue}"/>
+						<UniformGrid Columns="2">
+							<TextBlock Classes="Sub" Text="354 тыс. ₽"/>
+							<TextBlock Classes="Sub Right" Text="100 млн ₽"/>
+						</UniformGrid>
+					</StackPanel>
+					<StackPanel>
+						<TextBlock Classes="Sub" Text="Первоначальный взнос" Margin="25,0,0,5"/>
+						<NumericUpDown Value="{Binding InputData.InitialFee}"
+									   Minimum="{Binding InputData.InitialFeeMin}"
+									   Maximum="{Binding InputData.InitialFeeMax}"
+									   Increment="100000"/>
+						<Slider Value="{Binding InputData.InitialFee}"
+								Minimum="{Binding InputData.InitialFeeMin}"
+								Maximum="{Binding InputData.InitialFeeMax}"/>
+						<UniformGrid Columns="2">
+							<TextBlock Classes="Sub"
+									   Text="{Binding InputData.InitialFeeMin_Performance}"/>
+							<TextBlock Classes="Sub Right"
+									   Text="{Binding InputData.InitialFeeMax_Performance}"/>
+						</UniformGrid>
+					</StackPanel>
+					<StackPanel>
+						<TextBlock Classes="Sub" Text="Срок кредита" Margin="25,0,0,5"/>
+						<NumericUpDown Minimum="1"
+									   Maximum="30"
+									   Increment="1"
+									   Value="{Binding InputData.CreditTerm}"/>
+						<Slider Minimum="1"
+								Maximum="30"
+								Value="{Binding InputData.CreditTerm}"/>
+						<UniformGrid Columns="2">
+							<TextBlock Classes="Sub" Text="1 год"/>
+							<TextBlock Classes="Sub Right" Text="30 лет"/>
+						</UniformGrid>
+					</StackPanel>
+					<StackPanel>
+						<TextBlock Classes="Sub" Text="Стоимость аренды" Margin="25,0,0,5"/>
+						<NumericUpDown Increment="1000" Minimum="0"
+									   Value="{Binding InputData.Rent}"/>
+					</StackPanel>
+					<StackPanel>
+						<TextBlock Classes="Sub" Text="Период стройки" Margin="25,0,0,5"/>
+						<NumericUpDown Increment="1" Minimum="1"
+									   Value="{Binding InputData.ConstructionPeriod}"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+			
+			<Border Classes="Line V"/>
+
+			<!-- Выходные данные -->
+			<Border Padding="20 0" VerticalAlignment="Top">
+				<StackPanel Spacing="30">
+					<TextBlock Classes="H1 Bold"
+							   Text="Результаты"/>
+					<TextBlock Classes="H2"
+							   Text="Текущая программа сбера"/>
+					<UniformGrid Columns="2" HorizontalAlignment="Left">
+						<StackPanel Margin="0 10">
+							<TextBlock Classes="Sub"
+									   Text="Процентная ставка"/>
+							<TextBlock Classes="H3 Bold Accent"
+									   Text="{Binding Current.InterestRate_Performance}"/>
+						</StackPanel>
+						<StackPanel Margin="0 10">
+							<TextBlock Classes="Sub"
+									   Text="Ежемесячный платёж"/>
+							<TextBlock Classes="H3 Bold"
+									   Text="{Binding Current.MonthlyPayment_Performance}"/>
+						</StackPanel>
+						<StackPanel Margin="0 10">
+							<TextBlock Classes="Sub"
+									   Text="Сумма кредита"/>
+							<TextBlock Classes="H3 Bold"
+									   Text="{Binding Current.CreditAmount_Performance}"/>
+						</StackPanel>
+						<StackPanel Margin="0 10">
+							<TextBlock Classes="Sub"
+									   Text="Необходимый доход"/>
+							<TextBlock Classes="H3 Bold"
+									   Text="{Binding Current.RequiredIncome_Performance}"/>
+						</StackPanel>
+						<StackPanel Margin="0 10">
+							<TextBlock Classes="Sub"
+									   Text="Итоговая переплата"/>
+							<TextBlock Classes="H3 Bold"
+									   Text="{Binding Current.FinalOverpayment_Performance}"/>
+						</StackPanel>
+					</UniformGrid>
+					
+					<Border Classes="Line H"/>
+					
+					<TextBlock Classes="H2"
+							   Text="Предложенная программа"/>
+					<StackPanel Spacing="30" Orientation="Horizontal">
+						<StackPanel>
+							<TextBlock Classes="H3 Bold" Text="Период постройки"/>
+							<UniformGrid Columns="2" HorizontalAlignment="Left">
+								<StackPanel Margin="0 10">
+									<TextBlock Classes="Sub"
+											   Text="Процентная ставка"/>
+									<TextBlock Classes="H3 Bold Accent"
+											   Text="{Binding New_Period1.InterestRate_Performance}"/>
+								</StackPanel>
+								<StackPanel Margin="0 10">
+									<TextBlock Classes="Sub"
+											   Text="Ежемесячный платёж"/>
+									<TextBlock Classes="H3 Bold"
+											   Text="{Binding New_Period1.MonthlyPayment_Performance}"/>
+								</StackPanel>
+								<StackPanel Margin="0 10">
+									<TextBlock Classes="Sub"
+											   Text="Сумма кредита"/>
+									<TextBlock Classes="H3 Bold"
+											   Text="{Binding New_Period1.CreditAmount_Performance}"/>
+								</StackPanel>
+								<StackPanel Margin="0 10">
+									<TextBlock Classes="Sub"
+											   Text="Необходимый доход"/>
+									<TextBlock Classes="H3 Bold"
+											   Text="{Binding New_Period1.RequiredIncome_Performance}"/>
+								</StackPanel>
+								<StackPanel Margin="0 10">
+									<TextBlock Classes="Sub"
+											   Text="Итоговая переплата"/>
+									<TextBlock Classes="H3 Bold"
+											   Text="{Binding New_Period1.FinalOverpayment_Performance}"/>
+								</StackPanel>
+							</UniformGrid>
+						</StackPanel>
+						<StackPanel>
+							<TextBlock Classes="H3 Bold" Text="Оставшийся период" FontSize="18"/>
+							<UniformGrid Columns="2">
+								<StackPanel Margin="0 10">
+									<TextBlock Classes="Sub"
+											   Text="Процентная ставка"/>
+									<TextBlock Classes="H3 Bold Accent"
+											   Text="{Binding New_Period2.InterestRate_Performance}"/>
+								</StackPanel>
+								<StackPanel Margin="0 10">
+									<TextBlock Classes="Sub"
+											   Text="Ежемесячный платёж"/>
+									<TextBlock Classes="H3 Bold"
+											   Text="{Binding New_Period2.MonthlyPayment_Performance}"/>
+								</StackPanel>
+								<StackPanel Margin="0 10">
+									<TextBlock Classes="Sub"
+											   Text="Сумма кредита"/>
+									<TextBlock Classes="H3 Bold"
+											   Text="{Binding New_Period2.CreditAmount_Performance}"/>
+								</StackPanel>
+								<StackPanel Margin="0 10">
+									<TextBlock Classes="Sub"
+											   Text="Необходимый доход"/>
+									<TextBlock Classes="H3 Bold"
+											   Text="{Binding New_Period2.RequiredIncome_Performance}"/>
+								</StackPanel>
+								<StackPanel Margin="0 10">
+									<TextBlock Classes="Sub"
+											   Text="Итоговая переплата"/>
+									<TextBlock Classes="H3 Bold"
+											   Text="{Binding New_Period2.FinalOverpayment_Performance}"/>
+								</StackPanel>
+							</UniformGrid>
+						</StackPanel>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+		</StackPanel>
+	</StackPanel>
+
+</Window>
