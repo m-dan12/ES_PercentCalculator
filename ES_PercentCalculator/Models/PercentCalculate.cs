@@ -12,7 +12,7 @@ namespace ES_PercentCalculator.Models
         // Метод для вычисления процентной ставки
         public static double CalculateInterestRate(double P, double S, int n)
         {
-            double r = 10;  // начальное приближение
+            double r = 5;  // начальное приближение
             for (int i = 0; i < 1000; i++)
             {
                 double f = P * (Math.Pow(1 + r, n) - 1) - S * r * Math.Pow(1 + r, n);
