@@ -29,6 +29,10 @@ namespace ES_PercentCalculator.ViewModels
             [Reactive] public int CreditTerm { get; set; } = 4;                             // срок кредита (1-30 лет)
             [Reactive] public int Rent { get; set;} = 25000;
             [Reactive] public int ConstructionPeriod { get; set;} = 3;
+            [Reactive] public bool CitizenshipRF { get; set; }
+            [Reactive] public int Age { get; set; }
+            [Reactive] public int Salary { get; set; }
+            [Reactive] public int Experience { get; set; }
             [ObservableAsProperty] public int InitialFeeMin { get; }                        // минимальное значение первоначального взноса в зависимости от стоимости недвижимости
             [ObservableAsProperty] public int InitialFeeMax { get; }                        // максимальное значение первоначального взноса в зависимости от стоимости недвижимости
             [ObservableAsProperty] public int MinimumCreditTerm { get; }                    // срок кредита (1-30 лет)
@@ -42,7 +46,7 @@ namespace ES_PercentCalculator.ViewModels
                 this.WhenAnyValue(vm => vm.PropertyValue)
                     .Select(x => (int)(x * 0.151))
                     .ToPropertyEx(this, vm => vm.InitialFeeMin);
-                
+
                 this.WhenAnyValue(vm => vm.InitialFeeMin)
                     .Select(value => value >= 1000000 ? $"{value / 1000000.0:F1} млн. ₽" : $"{value / 1000.0:F1} тыс. ₽")
                     .ToPropertyEx(this, vm => vm.InitialFeeMin_Performance);
@@ -65,7 +69,7 @@ namespace ES_PercentCalculator.ViewModels
                     .ToPropertyEx(this, vm => vm.MinimumCreditTerm);
 
                 this.WhenAnyValue(vm => vm.InitialFeeInPercent).Select(x => $"{x:F1}%").ToPropertyEx(this, vm => vm.InitialFeeInPercent_Performance);
-                this.WhenAnyValue(vm => vm.MinimumCreditTerm).Select(x => x % 10 == 1 && x % 100 != 11     ? $"{x} год"  :
+                this.WhenAnyValue(vm => vm.MinimumCreditTerm).Select(x => x % 10 == 1 && x % 100 != 11 ? $"{x} год" :
                                                                           x % 10 > 1 && x % 10 <= 4 &&
                                                                           !(x % 100 > 10 && x % 100 <= 14) ? $"{x} года" :
                                                                           $"{x} лет").ToPropertyEx(this, vm => vm.MinimumCreditTerm_Performance);
@@ -83,6 +87,7 @@ namespace ES_PercentCalculator.ViewModels
             [ObservableAsProperty] public double RequiredIncomeForConstructionPeriod { get; }                 // необходимый доход для периода постройки
             [ObservableAsProperty] public double RequiredIncomeForOtherPeriod { get; }                        // необходимый доход для оставшегося периода
             [ObservableAsProperty] public double FinalOverpayment { get; }                                    // итоговая переплата
+            [ObservableAsProperty] public bool IsApproved { get; }                                            // одобрение банка
             #endregion
 
             #region Переменные представления
@@ -140,6 +145,15 @@ namespace ES_PercentCalculator.ViewModels
                 this.WhenAnyValue(vm => vm.RequiredIncomeForConstructionPeriod).Select(x => $"{x:F0} ₽").ToPropertyEx(this, vm => vm.RequiredIncomeForConstructionPeriod_Performance);
                 this.WhenAnyValue(vm => vm.RequiredIncomeForOtherPeriod).Select(x => $"{x:F0} ₽").ToPropertyEx(this, vm => vm.RequiredIncomeForOtherPeriod_Performance);
                 this.WhenAnyValue(vm => vm.FinalOverpayment).Select(x => $"{x:F0} ₽").ToPropertyEx(this, vm => vm.FinalOverpayment_Performance);
+
+                this.WhenAnyValue(
+                    vm => vm.RequiredIncomeForConstructionPeriod,
+                    vm => vm._input.CitizenshipRF,
+                    vm => vm._input.Age,
+                    vm => vm._input.Experience,
+                    vm => vm._input.Salary,
+                    (reqIncome, citizenshipRF, age, experience, salary) => citizenshipRF && age >= 21 && experience >= 6 && salary >= (int)reqIncome)
+                    .ToPropertyEx(this, vm => vm.IsApproved);
             }
             private static double MonthlyPaymentCalculate(int creditAmount, double monthlyRate, int numberOfMonth) =>
                 creditAmount * (monthlyRate * Math.Pow(1 + monthlyRate, numberOfMonth)) / (Math.Pow(1 + monthlyRate, numberOfMonth) - 1);
